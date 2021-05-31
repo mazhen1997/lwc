@@ -1,0 +1,19 @@
+<template>
+    <lightning-card title="Contact" icon-name="custom:custom14">
+        <div class="c-container" style="padding: 10px; height:350px;">
+            <template if:true={contacts.data}>
+                <template if:true={errors}>
+                    <p>{errors}</p>
+                    </template>
+                <lightning-datatable
+                    key-field="Id"
+                    data={contacts.data}
+                    columns={columns}
+                >
+               </lightning-datatable>
+            </template>
+        </div>
+
+    </lightning-card>
+    
+</template>

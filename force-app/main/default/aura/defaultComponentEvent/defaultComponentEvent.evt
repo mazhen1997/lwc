@@ -1,0 +1,3 @@
+<aura:event type="COMPONENT" description="default component event has no attr" >
+    <aura:attribute name="fields" type="object"/>
+</aura:event>

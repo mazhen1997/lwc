@@ -1,0 +1,366 @@
+<apex:page standardController="T_Shipment__c" >
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+    <head>
+        <title></title>
+        <meta name="referrer" content="no-referrer"/>
+        <apex:includeScript value="{!$Resource.jquery}" />
+        <apex:includeScript value="{!$Resource.sheetJs}" />
+        <apex:stylesheet value="{!URLFOR($Resource.lightningdesignsystem,'styles/salesforce-lightning-design-system.css')}" /> 
+        <style> 
+           
+        </style>
+    </head>
+    <body>
+        <article class="slds-card cardRadius tablePosition slds-card_narrow">
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                        <span class="slds-icon_container slds-icon-standard-account" title="account">
+                            <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                <use xlink:href="{!URLFOR($Resource.lightningdesignsystem,'/icons/standard-sprite/svg/symbols.svg#account')}"></use>
+                            </svg>
+                            <span class="slds-assistive-text">account</span>
+                        </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                                <span>Accounts</span>
+                        </h2>
+                         <p class=""> Anything can go into the card body</p>
+                    </div>
+                    <div class="slds-no-flex">
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <div class="slds-file-selector slds-file-selector_files">
+                                    <div class="slds-file-selector__dropzone">
+                                        <input type="file" class="slds-file-selector__input slds-assistive-text" accept="xls/xlsx" id="file-upload-input-01" onchange="importf(this);" 
+                                               aria-labelledby="file-selector-primary-label file-selector-secondary-label" />
+                                        <label class="slds-file-selector__body" for="file-upload-input-01" id="file-selector-secondary-label">
+                                            <span class="slds-file-selector__button slds-button slds-button_neutral">
+                                                <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                                                    <use  xlink:href="{!URLFOR($Resource.lightningdesignsystem,'/icons/utility-sprite/svg/symbols.svg#upload')}"></use>
+                                                </svg>Upload Files</span>
+                                            <span class="slds-file-selector__text slds-medium-show">or Drop Files</span>
+                                                 <button class="slds-file-selector__button slds-button slds-button_neutral" onclick="openErrorAlertdialogr()">Error</button>
+                                                <button class="slds-file-selector__button slds-button slds-button_neutral" onclick="openSuccessAlertdialogr()">Success</button>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </header>
+            </div>
+            <div class="slds-card__body slds-card__body_inner">
+                <table aria-multiselectable="true" class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols slds-table_cell-buffer slds-table_col-bordered" role="grid" id="showDataTable">
+                    <thead>
+                        <tr class="slds-line-height_reset" id="showDataTableKey">
+                            <th class="" scope="col">
+                                <div class="slds-truncate" value="No"> No.</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate"  value="ukezukenodate">受付日付</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" value="productNo">  返品No.</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate"  value="ukezukeno"> 受付No.</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" value="tokuisakicode"> 得意先コード</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" value="customerinfoName"> 得意先名</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" value="tokuisakitantousya">  得意先担当者</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" value="parent_id">集約店コード</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" value="parent_child_id">  集約店名</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" value="hinban">   記号番号 </div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" value="title"> タイトル</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" value="jan">  JAN</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" value="suryou"> 返品数</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" value="kuremusyubetu">クレーム種別</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    
+                </table>  
+            </div>
+            <div class="demo-only" id="errortiao" style="height:0rem;display:none;">
+                <div class="slds-notify_container slds-is-relative">
+                    <div class="slds-notify slds-notify_toast slds-theme_error" role="status">
+                        <span class="slds-assistive-text">error</span>
+                        <span class="slds-icon_container slds-icon-utility-error slds-m-right_small slds-no-flex slds-align-top" title="Description of icon when needed">
+                            <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#error"></use>
+                            </svg>
+                        </span>
+                        <div class="slds-notify__content">
+                            <h2 class="slds-text-heading_small ">Can’t save lead “Sally Wong” because
+                                <a href="javascript:void(0);">another lead</a> has the same name.</h2>
+                        </div>
+                        <div class="slds-notify__close">
+                            <button class="slds-button slds-button_icon slds-button_icon-inverse" title="Close">
+                                <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                                    <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                                </svg>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="slds-card__footer">
+                <a class="slds-card__footer-action" href="javascript:void(0);">
+                </a>
+            </footer>
+        </article>
+        
+          <!--Error alertdialog -->
+        <div id='permissionErrorPrompt' class="demo-only" style="height: 24rem;display:none;">
+            <section role="alertdialog" tabindex="-1" aria-labelledby="prompt-heading-id" aria-describedby="prompt-message-wrapper" class="slds-modal slds-fade-in-open slds-modal_prompt" aria-modal="true">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header slds-theme_error slds-theme_alert-texture">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+                            <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                                <use xlink:href="{!URLFOR($Resource.lightningdesignsystem,'icons/utility-sprite/svg/symbols.svg#close')}" />
+                                
+                            </svg>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading_medium" id="prompt-heading-id">Error</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="prompt-message-wrapper">
+                        <p>
+                           Error Message
+                        </p>
+                    </div>
+                    <footer class="slds-modal__footer slds-theme_default">
+                        <button onclick="clickBack()" class="slds-button slds-button_neutral">Ok</button>
+                        <button onclick="closeErrroAlertdialogr()" class="slds-button slds-button_neutral">Close</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+                  <!--success alertdialog -->
+        <div id='permissionSuccessPrompt' class="demo-only" style="height: 24rem;display:none;">
+            <section role="alertdialog" tabindex="-1" aria-labelledby="prompt-heading-id" aria-describedby="prompt-message-wrapper" class="slds-modal slds-fade-in-open slds-modal_prompt" aria-modal="true">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header slds-theme_success slds-theme_alert-texture">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+                            <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                                <use xlink:href="{!URLFOR($Resource.lightningdesignsystem,'icons/utility-sprite/svg/symbols.svg#close')}" />
+                            </svg>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading_medium" id="prompt-heading-id">Error</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="prompt-message-wrapper">
+                        <p>
+                           Error Message
+                        </p>
+                    </div>
+                    <footer class="slds-modal__footer slds-theme_default">
+                        <button onclick="clickBack()" class="slds-button slds-button_neutral">Ok</button>
+                        <button onclick="closeSuccessAlertdialogr()" class="slds-button slds-button_neutral">Close</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+        
+    </body>
+    </html>
+    <script>
+     function openErrorAlertdialogr(){
+         // $('#permissionErrorPrompt').show();
+          $('#errortiao').show();
+      
+    }
+    function closeErrroAlertdialogr(){
+        $('#permissionErrorPrompt').hide();
+    }
+    function openSuccessAlertdialogr(){
+        $('#permissionSuccessPrompt').show();
+    }
+    function closeSuccessAlertdialogr(){
+        $('#permissionSuccessPrompt').hide();
+    }
+    
+    function clickBack(){
+        history.back();
+    }
+    var rABS = false;
+    var sheets = "T04_返品受付採番用データ ";
+    var keyList = [];
+    var cellDataListMap = [];
+    //数据行位置
+    var theDataLine = 1;
+    
+    window.onload = function(){
+        toggleMask(false);
+        var showDataTableKey = $(".slds-line-height_reset").find("div");
+        
+        for(var i = 0 ; i < showDataTableKey.length; i++){
+            
+            keyList[i] = $.trim($(showDataTableKey[i]).attr("value"));
+        }
+        
+    }
+    function importf(obj) {
+        console.log(obj.files.length);
+        toggleMask(true);
+        if(obj.files.length == 0) {
+            toggleMask(false);
+            templateError(true);
+            return;
+        }
+        var f = obj.files[0];
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            setTimeout(function(){
+                inputFileOnLoad(e)
+            },100);
+        };
+        if(rABS) {
+            reader.readAsArrayBuffer(f);
+        } else {
+            reader.readAsBinaryString(f);
+        }
+    }
+    
+    function inputFileOnLoad(e){
+        try{
+            var fileName = $("#file-upload-input-01").val();
+            var fileExt = fileName.substring(fileName.lastIndexOf("."));
+            if(fileExt != ".xls" && fileExt!=".xlsx"){
+                console.log("suffix error");   
+            } 
+            var data = e.target.result;
+            if(rABS) {
+                wb = XLSX.read(btoa(fixdata(data)), {
+                    type: 'base64'
+                });
+            } else {
+                wb = XLSX.read(data, {
+                    type: 'binary'
+                });
+            }
+            var cellDataList = XLSX.utils.sheet_to_json(wb.Sheets[sheets]);
+            //数据行位置
+            console.log(cellDataList); 
+            cellDataList = cellDataList.slice(theDataLine,cellDataList.length)
+            //检测excel
+            if(cellDataList.length < 1){
+                toggleMask(false);
+                templateError(true);
+                return;
+            }
+            parseData(cellDataList);
+        }catch(e){
+            templateError(true);
+            toggleMask(false);
+            return;
+        }
+    }
+    
+    function parseData(cellDataList){
+        //解析excel
+        for(var i = 0 ; i < cellDataList.length ; i++){
+            var myMap = {};
+            for(y in keyList){
+                if(y == 0){
+                    if(cellDataList[i]['__EMPTY'] != undefined){
+                        myMap[keyList[0]] = cellDataList[i]['__EMPTY'];                    
+                    }
+                }else{
+                    if(cellDataList[i]['__EMPTY_' + y] != undefined){
+                        myMap[keyList[y]] = cellDataList[i]['__EMPTY_' + y];                            
+                    }
+                }
+            };
+            //excel校验
+            myMap.ukezukenodate = formatDate(myMap.ukezukenodate);
+            
+            cellDataListMap[i] = myMap;
+        }
+      
+        addDataTr(cellDataListMap);
+        console.log("end");
+    }
+    
+    
+    function toggleMask(show){
+        var mask = $("#mask");
+        show?mask.show():mask.hide();
+    }
+    
+    function templateError(show){
+        var mask = document.getElementById("templateError");
+        mask.style.display=show?"block":"none";
+    }
+    function headSuccess(show){
+        var mask = document.getElementById("head");
+        mask.style.display=show?"block":"none";
+    }
+    function UploadSuccess(show){
+        var mask = document.getElementById("UploadSuccess");
+        mask.style.display=show?"block":"none";
+    }
+    
+    //插入table
+    function addDataTr(cellDataListMap){
+        var data ="";
+        for(var i = 0 ; i < cellDataListMap.length ; i++){
+            var appendDataTr = "";
+            for(var y = 0 ; y < keyList.length ; y++){
+                var onOff = false;
+                if(cellDataListMap[i][keyList[y]] != undefined){    
+                    appendDataTr = appendDataTr + "<td data-label=\"\"> <div class=\"slds-truncate\" title=\"\">"+cellDataListMap[i][keyList[y]]+"</div></td>";
+                 
+                }else{
+                    appendDataTr = appendDataTr + "<td data-label=\"\"> <div class=\"slds-truncate\" title=\"\"></div></td>";
+                }
+            }
+            data ="<tr class=\"slds-hint-parent\" >"+appendDataTr+"</tr>";
+            $("#showDataTable").append("<tbody>"+data+"</tbody>");
+        }     
+    }
+    function formatDate(numb) {
+        if(numb != '' && numb != undefined){
+            const time = new Date((numb - 1) * 24 * 3600000 + 1);
+            time.setYear(time.getFullYear() - 70);
+            const year = time.getFullYear() + '';
+            const month = time.getMonth() + 1 + '';
+            const date = time.getDate()+ '';
+            const hours = time.getHours() + '';
+            const minutes = time.getMinutes() + '';
+            return year + "-" + (month < 10 ? '0' + month : month) + "-" + (date < 10 ? '0' + date : date)// + " " +(hours < 10 ? '0' + hours : hours) + ":" + (minutes < 10 ? '0' + minutes : minutes)
+        }else{
+            return "";
+        }
+    }
+    
+    
+    
+    </script>
+    
+</apex:page>

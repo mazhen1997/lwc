@@ -1,0 +1,8 @@
+<apex:page controller="FileUploadUsedTransientController">
+    <apex:pageMessages />
+    <apex:form >
+    <apex:inputFile value="{!fileUploadBody}" fileName="{!fileUploadName}"/>
+    <apex:commandButton value="上传" action="{!uploadFile}"/>
+    </apex:form>
+  
+</apex:page>

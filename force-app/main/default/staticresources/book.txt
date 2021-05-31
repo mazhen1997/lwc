@@ -1,0 +1,555 @@
+﻿
+
+***********************************************************log_delete********************************************************************************
+salesforce developer 开发时 生成log
+list<apexlog> loglist = [select id from apexlog where loguserid  = '0050w00000133r5' limit 476];
+delete loglist
+
+
+********************************************trailhead************************************************************************************************
+https://trailhead.salesforce.com/en/content/learn/modules/lex_javascript_button_migration/javascript_button_alternatives 
+https://trailhead.salesforce.com/ja/content/learn/modules/lex_implementation_reports_dashboards/lex_implementation_reports_dashboards_appexchange?trail_id=lex_admin_implementation
+
+*****************************************************************************************************************************************************
+
+
+
+
+
+***************************************************************************get_detail_id*************************************************************
+自定义lighting 组件 
+implements：force:hasRecordId
+var a= component.get("v.recordId");
+就可以获取到当前记录ID
+*****************************************************************************************************************************************************
+
+
+
+
+
+
+
+**********************************************************Rename_lighnting custorm compont************************************************************
+
+通过salesforce developer console 
+开发查询 soql 即可更改 自定义lighting组件的名字
+SELECT Id, DeveloperName, MasterLabel FROM AuraDefinitionBundle 
+
+*******************************************************************************************************************************************************
+
+
+
+
+
+
+
+
+********************************************************************聚合函数_apex承接*********************************************************************
+AggregateResult[] results = [
+        SELECT CreatedBy.Name, Count(Id) Quantity FROM Event  where Role__c = 'KD US Rep' or  Role__c = 'KD US Mgr' GROUP BY CreatedBy.Name
+    ];
+
+
+
+详情Link： https://salesforce.stackexchange.com/questions/77143/grouped-query-call/77168#77168
+
+*******************************************************************************************************************************************************
+
+
+
+
+
+
+*************************************************************************API***************************************************************************
+
+apex develpoer:
+
+https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes.htm?search_text=
+
+
+visualforce pages developer 
+
+https://developer.salesforce.com/docs/atlas.en-us.pages.meta/pages/pages_intro.htm
+
+
+lighting component-library
+
+https://developer.salesforce.com/docs/component-library
+
+
+
+
+https://archive-2_8_3.lightningdesignsystem.com/icons/
+
+***********************************************************************************************************************************************
+
+
+
+*************************************************************************salesforce vscode use*************************************************
+https://developer.salesforce.com/tools/vscode/en/getting-started/install
+
+
+
+
+********************************************************************* profile SOQL***************************************************************
+
+select Id,Name from profile
+select Id,profileId from user 
+************************************************************************************************************************************************* 
+
+
+
+
+*********************************************************************发邮件代码_Sample******************************************************************
+ public static void sendEmail(List<User> corporationUserList,Map<String,String> baseWeekMap,Map<String,String> shimeTmMap){
+        //send emails
+        List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
+        String link = CS_Common__c.getInstance().community_url__c + 'corporationOrderSituation';
+        for(User corporationUser : corporationUserList){
+            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+            //String[] toAddresses = new String[] {'lingjie.yu@sony.com'};
+            String[] toAddresses = new String[] {corporationUser.email};
+            mail.setToAddresses(toAddresses);
+            mail.setReplyTo(UserInfo.getUserEmail());
+            mail.setSenderDisplayName('SFront');
+            mail.setSubject('【受注案内】【SFront】 ' + baseWeekMap.get(corporationUser.customer_id__c) + ' 受注開始のお知らせ');
+            mail.setBccSender(false);
+            mail.setUseSignature(false);
+            String emailText = '当週分の割振数を確定しましたので、 ' + shimeTmMap.get(corporationUser.customer_id__c) + 'の前に、発注お願いいたします。';
+            emailText +=  '\r\n以下よりアクセス頂き、ご確認をお願いいたします。';
+            emailText +=  '\r\n\r\n１）「割振確認」ボタンを押下してください。';
+            emailText +=  '\r\n２）ダウンロードした各商品の割振数を確認した上に、ファイルに発注数を記入してください。';
+            emailText +=  '\r\n３）「発注」ボタンを押下し、２）で記入したファイルを選択し、「OK」ボタンを押下してください。';
+            emailText +=  '\r\n\r\n画面リンク：' + link;
+            emailText += '\r\n\r\n※※このご案内はシステムからの自動送信メールです。 \r\n 本メールには返信できませんのでご了承ください。';
+            mail.setPlainTextBody(emailText);
+            mails.add(mail);
+        }
+        if(mails.size() > 0){
+            Messaging.sendEmail(mails);
+        }
+    }
+
+***********************************************************************发送邮件 sample***********************************************************************************
+
+ List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
+ Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+ String[] toAddresses = new String[] {'lingjie.yu@sony.com'};
+ mail.setToAddresses(toAddresses);
+ mail.setSenderDisplayName('SFront');
+ mail.setSubject('【BATCH】【SFront】 START');
+ mail.setBccSender(false);
+ mail.setUseSignature(false);
+ String emailText = 'タイミングタスク一括処理開始';
+ mail.setPlainTextBody(emailText);
+ mails.add(mail);
+ if(mails.size() > 0){
+		Messaging.sendEmail(mails);
+	}
+
+
+********************************************************************************************************************************************************************
+
+
+
+
+        List<profile> profileInfoList = [select Id from profile where Name in ('ソフト担当','内製担当','セールス')];
+        List<Id> profileInfoIdList = new List<Id>();
+        List<String> mailAddressList = new List<String>();
+        for(profile pro : profileInfoList){
+            profileInfoIdList.add(pro.Id);
+        }
+        List<user> userAddress = [select email from user where profileId in: (profileInfoIdList)]; 
+		
+		
+*********************************************************************************************************************************************************************		
+		
+		
+		
+		
+		
+		
+		
+ ****************************************************************审批流发起申请********************************************************************************************
+         List<Group> approvers = [select Id,Name from Group where type = 'queue' and Name = 'RProductApprovalQ'];
+                Approval.ProcessSubmitRequest req = new Approval.ProcessSubmitRequest();
+                req.setObjectId((String)henpin.id);
+                req.setNextApproverIds(new List<Id>{approvers[0].Id});
+                Approval.ProcessResult result = Approval.process(req);
+				
+				
+********************************************************************关于审批流的SOQL***************************************************************************************
+ProcessInstance processInstance = [Select id From ProcessInstance where TargetObjectId = :recordId order by CreatedDate desc limit 1];
+ProcessInstanceStep processInstanceStep=
+				[Select id,Comments From ProcessInstanceStep where ProcessInstanceId = :(String)processInstance.id and (StepStatus ='Approved' or StepStatus ='Rejected') ];
+Trigger.new.get(0).comment__c = processInstanceStep.Comments; 
+
+
+*****************************************************************通过代码，创建Queue，并添加 用户 **************************************************************************
+Group grpObj = new Group(Type='Queue', Name='Test Queue1');
+insert grpObj;
+QueueSObject qObj = new QueueSObject(SobjectType='Lead', QueueId=grpObj.Id);
+insert qObj;
+ID gr = [SELECT Id FROM Group WHERE Name = 'Test Queue1'].Id;
+ID us = [SELECT Id FROM User WHERE Name = 'Agent Comms' LIMIT 1].Id;
+GroupMember gm = new GroupMember(GroupId = gr, UserOrGroupId = us);
+insert gm;
+
+
+
+详细请看链接：
+https://salesforce.stackexchange.com/questions/96773/assigning-users-or-role-to-queue-via-apex-code
+
+
+
+***********************************************************************************************************************************************************************
+
+JavaScript 之 Blob 对象类型     base 64 
+
+
+
+
+************************************************************************Lightin Datetable 属性*************************************************************************
+属性	类型	描述
+行动	宾语	将操作下拉菜单附加到列。您必须传递标签名称对的列表。
+cellAttributes	宾语	提供附加的自定义，例如水平对齐或将图标附加到输出。有关对齐的更多信息，请参见在列中对齐数据。有关添加图标的更多信息，请参见将图标追加到列数据。
+可编辑的	布尔值	指定列是否支持内联编辑。默认为false。
+fieldName	串	需要。将列属性绑定到关联数据的名称。每个column属性必须对应于数据数组中的一项。
+fixedWidth	整数	指定列的宽度（以像素为单位），并使该列不可调整大小。
+iconName	串	图标的闪电设计系统名称。名称以“标准：机会”的格式编写。图标被添加到标题标签的左侧。
+initialWidth	整数	初始化时列的宽度，该宽度必须在minColumnWidth和maxColumnWidth值之内，如果未提供，则必须在50px和1000px之内。
+标签	串	需要。列标题中显示的文本标签。
+可排序	布尔值	指定是否可以对列进行排序。默认为false。
+类型	串	需要。用于数据格式化的数据类型。有关更多信息，请参见使用数据类型格式化。
+
+
+datatable 源码
+
+https://www.lightningdesignsystem.com/components/data-tables/#Header-cell-focused
+
+
+
+***********************************************************************************************************************************************************************
+
+
+
+
+
+
+
+
+**********************************************************************batch 定时运行***************************************************************************************
+
+G45_B01_ProductReportSchedule ms = new G45_B01_ProductReportSchedule();
+System.schedule('G45_B01_ProductReportSchedule','0 59 17 * * ?',ms); // 13
+
+//每月每日17时59分0分0秒  运行 ------salesforce系统的时间
+
+
+****************************************************************定时任务 终止作业************************************************************************************
+
+global ScheduledCronDelete implements Schedulable {
+
+  global void execute(ScheduleContext context) {
+
+    for (CronTrigger job: [
+      SELECT Id, State, CronjobDetail.Name, CronJobDetail.Id, NextFireTime
+      FROM CronTrigger
+      WHERE NextFireTime = NULL
+      AND CronJobDetail.Name LIKE 'CronJobNameToDelete%'
+    ]) {
+      System.abortJob(job.Id);
+    }
+
+  }
+}
+
+
+
+https://salesforce.stackexchange.com/questions/173085/system-abortjob-from-apex-test-method
+
+***********************************************************************************************************************************************************************
+
+
+
+
+
+**********************************************************************共享设置******************************************************************************************
+
+共享规则 -> share 表
+
+https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_bulk_sharing_creating_with_apex.htm
+
+
+***********************************************************************************************************************************************************************
+
+
+
+
+
+
+********************************************************************判断当前用户的profile**********************************************************************************
+Schema.DescribeSObjectResult schemaResult = T_henpinjyouhouitiran_sie__c.SObjectType.getDescribe();
+listUrl = '/' + schemaResult.getKeyPrefix();
+
+	Id prodileId = UserInfo.getProfileId();
+	List<profile> profiles = [select Id,Name from profile where Id = :prodileId];
+	string profileName = '';
+	if(profiles.size()>0){
+		profile currentProfile = profiles[0];
+		profileName = currentProfile.Name;
+	}
+
+	profile_settings__c psc = profile_settings__c.getInstance();
+	if(profileName!=System.Label.system_manager_profile_name && profileName!=psc.ITS_MGR__c && profileName!=psc.application_pic__c){
+		this.message = '該当ユーザーが「採番用ダウンロード」ボタン への利用権限がありません、オペレーション担当へ依頼お願いします。 ';
+		
+	   }
+
+***********************************************************************************************************************************************************************
+
+********************************************************************标准功能listview checkbox 勾选 迁移 visual force page 获取 id**************************************
+  private  T_henpinjyouhouitiran_sie__c[] henpinjyouhouitiranArray;
+  public G45_T02_ProductReturnResultReport(ApexPages.StandardSetController getController){
+        henpinjyouhouitiranArray=getController.getSelected();
+    }
+
+
+********************************************************************visualforce page 获取当前id************************************************************************
+ApexPages.currentPage().getParameters().get('selected')
+http://www.sfdcpoint.com/salesforce/get-current-record-id-salesforce/
+
+
+Schema.DescribeSObjectResult schemaResult = T_henpinjyouhouitiran_sie__c.SObjectType.getDescribe();
+listUrl = '/' + schemaResult.getKeyPrefix();
+
+***********************************************************************************************************************************************************************
+
+message
+
+
+$A.get("e.force:showToast");    ?????
+
+https://wedgecommerce.com/forceshowtoast-in-lightning/
+
+https://developer.salesforce.com/docs/component-library/bundle/force:refreshView/documentation
+
+**************************************************************************************************************************************************************************
+
+
+
+
+
+
+
+
+********************************************************************通过代码 获取lighting datatablelabel 名字*************************************************************
+
+        helper.sendRequest(component,"c.getCommonLabels",{
+            fieldNames:['Name','ukezukeno__c','tokuisakicode__c','parent_child_id__c','parent_id__c','tokuisakimei__c',
+                        'tokuisakitantousya__c','henpinstatus__c','kihyoubi__c','henpin_type__c','download_flg__c'],
+            objectTypeName:'T_henpinjyouhouitiran_sie__c'
+        },function(opt){
+            var labels = {};
+            labels.Name = opt.Name.label;
+            labels.henpinstatus__c = opt.henpinstatus__c.label;
+            component.set("v.labels",labels);
+            component.set("v.columns",[
+                {label: opt.Name.label, fieldName: 'Name', type: 'text'},
+                {label: opt.ukezukeno__c.label, fieldName: 'ukezukeno__c', type: 'text'},
+                {label: opt.tokuisakicode__c.label, fieldName: 'tokuisakicode__c', type: 'text'},
+                //{label: opt.parent_child_id__c.label, fieldName: 'parent_child_id__c', type: 'text'},
+                //{label: opt.parent_id__c.label, fieldName: 'parent_id__c', type: 'text'},
+                {label: opt.tokuisakimei__c.label, fieldName: 'tokuisakimei__c', type: 'text'},
+                {label: opt.tokuisakitantousya__c.label, fieldName: 'tokuisakitantousya__c', type: 'text'},
+                {label: opt.henpinstatus__c.label, fieldName: 'henpinstatus__c', type: 'text'},
+                {label: opt.kihyoubi__c.label, fieldName: 'kihyoubi__c', type: 'date'},
+                {label: opt.henpin_type__c.label, fieldName: 'henpin_type__c', type: 'text'},
+                {label: opt.download_flg__c.label, fieldName: 'download_flg__c', type: 'text'}
+               ]);
+		});
+
+
+
+    @AuraEnabled
+    public static Map<String,object> getCommonLabels(String[] fieldNames,String objectTypeName) {
+        Map<String,object> labels = new Map<String,object>();
+        SObjectType esalesTemp = Schema.getGlobalDescribe().get(objectTypeName);
+        Sobject Object_name = esalesTemp.newSObject();
+        Schema.sObjectType sobject_type = Object_name.getSObjectType();
+        Map<String,Schema.SObjectField> mfields = sobject_type.getDescribe().fields.getMap();
+        for (String s: mfields.keySet()) {
+            SObjectField fieldToken = mfields.get(s);
+            DescribeFieldResult selectedField = fieldToken.getDescribe();
+            String name = selectedField.getName();
+            String fieldType = selectedField.getType()+'';
+            Boolean isRequired = fieldType == 'BOOLEAN'?false:!selectedField.isNillable();
+            if(fieldNames.contains(name)){
+                labels.put(name,new Map<String,object>{
+                    'required' => isRequired,
+                        'label' => selectedField.getLabel(),
+                        'helpText' => selectedField.getInlineHelpText()
+                        });
+            }
+        }
+        return labels;
+    }
+
+
+
+*********************************************************************************************checkbox勾选************************************************************
+    navToDownload : function(component, event, helper) {
+        try{
+            var selectIds = component.get('v.selects');
+            var selectIdsStr = selectIds.join();
+            var urlEvent = $A.get("e.force:navigateToURL");
+            urlEvent.setParams({
+                "url": "/apex/G45_ProductReturnResultReport?selected="+selectIdsStr
+            });
+            urlEvent.fire();
+        }catch(e){
+            console.info(e);
+        }
+    },  
+    updateSelected : function(component, event, helper) {
+        var selectedRows = event.getParam('selectedRows');
+        var selectedRowIds = [];
+        selectedRows.map(function(row){
+            selectedRowIds.push(row.Id);
+        });
+        component.set('v.selects', selectedRowIds);
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+**********************************************************************************************************************************************************************
+
+        helper.sendRequest(component,"c.getOptions",null,function(options){
+            component.set("v.options",options);
+		});
+
+
+
+    public static List<object> getPickListOptions(String fieldName,String typeName) {
+        List<object> picValues= new List<object>();
+        String objectTypeName = typeName!=null?typeName:'product_info__c';
+        Schema.SObjectType targetType = Schema.getGlobalDescribe().get(objectTypeName);
+        Sobject Object_name = targetType.newSObject();
+        Schema.sObjectType sobject_type = Object_name.getSObjectType();
+        Schema.DescribeSObjectResult sobject_describe = sobject_type.getDescribe();
+        Map<String, Schema.SObjectField> field_map = sobject_describe.fields.getMap();
+        List<Schema.PicklistEntry> lPickEntryList = field_map.get(fieldName).getDescribe().getPickListValues();
+        for (Schema.PicklistEntry tPicklistEntry : lPickEntryList) {
+            picValues.add(new Map<String,object>{
+                'value' => tPicklistEntry.getValue(),
+                    'isActive' => tPicklistEntry.isActive(),
+                    'isDefaultValue' => tPicklistEntry.isDefaultValue(),
+                    'label' => tPicklistEntry.getLabel()
+                    });
+        }
+        return picValues;
+    }	
+
+
+
+
+    @AuraEnabled
+    public static Map<string,List<object>> getOptions() {
+        Map<string,List<object>> options = new Map<string,List<object>>();
+        List<object> status = getPickListOptions('henpinstatus__c','T_henpinjyouhouitiran_sie__c');
+        options.put('status__c',status);
+        return options;
+        
+    }
+
+
+
+
+
+***********************************************************************pop_up********************************************************************************************
+<aura:component >
+    <aura:attribute name="footer" type="Aura.Component[]" default="" />
+    <aura:attribute name="headerExt" type="Aura.Component[]" default="" />
+    <aura:attribute name="minHeight" type="string" default="" />
+    <aura:attribute name="title" type="string" default="" />
+    <aura:attribute name="bodyPadding" type="string" default="" />
+    <aura:attribute name="size" type="string" default="" />
+    <aura:attribute name="open" type="boolean" default="false" />
+    <aura:attribute name="loading" type="boolean" default="false" />
+    <aura:registerEvent name="onclose" type="c:defaultComponentEvent"/>
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="{!'slds-modal' + (v.open?' slds-fade-in-open ':' ') + (v.size?'slds-modal_'+v.size:'slds-modal_small')}">
+        <div class="slds-modal__container">
+            <header class="slds-modal__header">
+                <lightning:buttonIcon class="slds-modal__close" onclick="{!c.close}" size="large" iconName="utility:close"  variant="bare-inverse" title="close" alternativeText="Close modal" />
+                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{!v.title}</h2>
+                {!v.headerExt}
+            </header>
+            <div class="{!'slds-modal__content '+(v.bodyPadding?'slds-p-around_'+v.bodyPadding:'slds-p-around_medium')}" id="modal-content-id-1">
+                <aura:if isTrue="{!v.loading}">
+                    <lightning:spinner variant="brand" />
+                </aura:if>
+                {!v.body}
+            </div>
+            <aura:if isTrue="{!v.footer.length>0}">
+                <footer class="slds-modal__footer">
+                    {!v.footer}
+                </footer>
+            </aura:if>
+        </div>
+    </section>
+    <div class="{!'slds-backdrop' + (v.open?' slds-backdrop_open':'')}"></div>
+</aura:component>
+
+
+
+
+({
+	close : function(component, event, helper) {
+		component.set("v.open",false);
+        var onEvent = component.getEvent("onclose");
+		onEvent.fire();
+	}
+})
+
+
+
+
+({
+	helperMethod : function() {
+		
+	}
+})
+
+
+
+
+.THIS .slds-spinner_container{
+    position:absolute !important;
+    top:0px !important;
+}
+.THIS .slds-modal__content{
+    position:relative;
+}
+
+
+
+
+******************************************************************自定义lighting lookup 组件*******************************************************************************
+实例：https://sfdcmonkey.com/2017/01/07/custom-lookup-lightning-component/
+
+      https://cafeforce.com/custom-lookup-component-salesforce-lightning/
+
+      https://sfdcmonkey.com/2017/07/17/re-usable-custom-lookup/
+
+　　　https://cafeforce.com/multi-object-lookup-component-lightning-salesforce/

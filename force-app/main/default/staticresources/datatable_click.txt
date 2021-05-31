@@ -1,0 +1,270 @@
+//componment
+<aura:component controller="G45_CustormRelatedListController" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <!-- 初始 -->
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler event="force:refreshView" action="{!c.init}" />
+    <!-- 列表 -->
+    <aura:attribute name="mydata" type="List"/>
+    <aura:attribute name="mycolumns" type="List"/>
+    <aura:attribute name="mydataLength" type="Object" default="0"/>
+    <aura:attribute name="draftValues" type="Object" default="[]"/>
+    <aura:attribute name="SpPopupSwitch" type="boolean" default="false"/>
+    <aura:attribute name="profileflag" type="boolean" default="false"/>
+    <aura:attribute name="imgUrlOne" type="String"/>
+    <aura:attribute name="imgUrlTwo" type="String"/>
+    <aura:attribute name="imgNameOne" type="String"/>
+    <aura:attribute name="imgNameTwo" type="String"/>
+    
+    <div>
+        <lightning:card variant="Narrow" title="返品情報詳細" iconName="standard:contract_line_item" class="cardRadius tablePosition">
+            <p class="slds-p-horizontal_small">
+                {! v.mydataLength + ' items ? Updated a few seconds ago'}
+            </p>
+            <br/>
+            <div style="width: 99.99%;">
+                <lightning:datatable aura:id="linesTable" 
+                                     data="{! v.mydata }" 
+                                     columns="{! v.mycolumns }"
+                                     keyField="Id" 
+                                     hideCheckboxColumn="true"
+                                     showRowNumberColumn="true"
+                                     enableInfiniteLoading="false"
+                                     onrowaction="{! c.handleRowAction }" 
+                                     draftValues="{! v.draftValues }"
+                                     onsave="{! c.handleSaveEdition }"/> 	
+            </div>
+            <br/>
+        </lightning:card>
+    </div>
+    <div style ="height: 100%;background-color: #000;border-radius: .25rem;width: 100%;float: left;position: fixed;z-index: 998;top: 0rem;left: 0rem;opacity: 0.6;"  class="{! v.SpPopupSwitch == false ? ' hide' : ''}"></div>
+    <!-- ?出? -->
+    <div style ="height: 5rem;border-radius: .25rem;width: 70%;float: left;position: fixed;z-index: 999;top: 27%;left: 15%;"  class="{! v.SpPopupSwitch == false ? ' hide' : ''}">
+        
+        <lightning:card  class="cardRadius tablePosition" variant="Narrow" title="写真添付" iconName="custom:custom38">
+            <div style="width: 99.99%;overflow:auto;text-align: center;height:450px" align="center">
+                <table style="border-collapse:separate; border-spacing:10px 10px;">
+                    
+                    <tr><img src="{! v.imgUrlOne}"/></tr>
+                    <tr>{! v.imgNameOne}</tr>
+                    <tr><div style="border-bottom:1px solid black"></div></tr>
+                    <tr><img src="{! v.imgUrlTwo}"/></tr>
+                    <tr>{! v.imgNameTwo}</tr>
+                </table>
+            </div>
+            <div class="form-footer slds-p-vertical_medium slds-align_absolute-center">
+                <div class="slds-m-horizontal_xx-small">
+                    <button title="close" type="button" class="slds-button slds-button--neutral uiButton" onclick="{! c.popupAddClose }">Close</button>
+                </div>
+            </div>
+        </lightning:card>
+       
+    </div>    
+</aura:component>
+
+
+//controller
+
+({
+	init : function(cmp, event, helper){
+           cmp.set('v.mycolumns',[
+               {  
+                   //?示名称
+                   label: '品番', 
+                   //字段名称
+                   fieldName: 'hinban__c', 
+                   type: 'text', 
+                   sortable: true
+               },
+               {  
+                   //?示名称
+                   label: 'タイトル', 
+                   //字段名称
+                   fieldName: 'title__c', 
+                   type: 'text', 
+                   sortable: true 
+               },
+               {  
+                   //?示名称
+                   label: 'カテゴリー', 
+                   //字段名称
+                   fieldName: 'category__c', 
+                   type: 'text', 
+                   sortable: true 
+               },
+               {  
+                   //?示名称
+                   label: '症状', 
+                   //字段名称
+                   fieldName: 'syoujyou__c', 
+                   type: 'text', 
+                   sortable: true 
+               },
+               {
+                   label: '写真添付', 
+                   type: 'button', 
+                   initialWidth: 135, 
+                   typeAttributes: { label: '写真添付', name: 'syasintenpu__c', title: '写真添付'}
+               },             
+               
+               {  
+                   //?示名称
+                   label: '数量', 
+                   //字段名称
+                   fieldName: 'suryou__c', 
+                   type: 'number',
+                   cellAttributes: { 
+                       alignment: 'left' 
+                   },
+                   sortable: true,
+                   editable: true
+               },
+               {  
+                   //?示名称
+                   label: 'シリアル番号', 
+                   //字段名称
+                   fieldName: 'serial_no__c', 
+                   type: 'text', 
+                   sortable: true 
+               },
+               {  
+                   //?示名称
+                   label: 'お客様ご購入日', 
+                   //字段名称
+                   fieldName: 'okyakusamagokounyuubi__c', 
+                   type: "date-local",
+                   typeAttributes:{
+                       month: "2-digit",
+                       day: "2-digit"
+                   }, 
+                   sortable: true 
+               },
+               {  
+                   //?示名称
+                   label: 'お客様お持込日', 
+                   //字段名称
+                   fieldName: 'okyakusamagomotikomuhi__c', 
+                   type: "date-local",
+                   typeAttributes:{
+                       month: "2-digit",
+                       day: "2-digit"
+                   }, 
+                   sortable: true 
+               },
+               {  
+                   //?示名称
+                   label: '入荷日', 
+                   //字段名称
+                   fieldName: 'nyuukabi__c', 
+                   type: "date-local",
+                   typeAttributes:{
+                       month: "2-digit",
+                       day: "2-digit"
+                   },
+                   sortable: true 
+               },
+           ]);
+           helper.getDataHandler(cmp);
+               cmp.set('v.SpPopupSwitch',false);
+	},
+    handleSaveEdition:function(cmp, event, helper){
+        var draftValues = event.getParam('draftValues');
+        helper.saveEdition(cmp,draftValues);
+        console.log(draftValues);
+    },	 
+    handleRowAction: function (cmp, event, helper) {
+        var action = event.getParam('action');
+        var row = event.getParam('row');
+        switch (action.name) {
+          case 'syasintenpu__c':
+            console.log(row.syasintenpu__c);
+            console.log(123123);
+            cmp.set('v.SpPopupSwitch',true);
+            cmp.set('v.imgNameOne',row.pic1_name__c);
+            console.log(row.pic1_id__c);
+            if(row.pic1_id__c !='' && row.pic1_id__c !=null){
+              cmp.set('v.imgUrlOne',row.pic1_id__c.replace('sfront--dev1.lightning.force.com', 'sfront--dev1--c.documentforce.com'));
+             }   
+            //cmp.set('v.imgUrlOne',row.pic1_id__c.replace('sfront--dev1.lightning.force.com', 'sfront--dev1--c.documentforce.com'));
+            cmp.set('v.imgNameTwo',row.pic2_name__c);
+            if(row.pic2_id__c !='' && row.pic2_id__c !=null){
+             cmp.set('v.imgUrlTwo',row.pic2_id__c.replace('https://sfront--dev1.lightning.force.com', 'https://sfront--dev1--c.documentforce.com'));
+            }  
+            //cmp.set('v.imgUrlTwo',row.pic2_id__c.replace('https://sfront--dev1.lightning.force.com', 'https://sfront--dev1--c.documentforce.com'));
+            break;
+        default:
+            break;
+        }
+    },  
+    popupAddClose: function(cmp, event, helper){
+        cmp.set('v.SpPopupSwitch',false);
+    }
+
+
+})
+
+
+
+//helper
+
+({
+	getDataHandler : function(cmp) {
+		var action = cmp.get('c.getData');
+        action.setParams({
+            'recordId': cmp.get("v.recordId")
+        });
+        action.setCallback(this, $A.getCallback(function (response) {
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                var data = response.getReturnValue();
+                cmp.set("v.mydata",data);
+                cmp.set("v.mydataLength",data.length);
+            } else if (state === "ERROR") {
+                var errors = response.getError();
+            }
+        }));
+        $A.enqueueAction(action);
+        
+	},
+    saveEdition: function (cmp,draftValues) {
+        var self = this;
+        //console.log(l);
+        var action = cmp.get('c.updateInline');
+        console.log('1111');
+        action.setParams({
+            'obj': draftValues
+        });
+        console.log('2222');
+        action.setCallback(this, $A.getCallback(function (response) {
+             console.log('3333');
+            var state = response.getState();
+              console.log('state'+state);
+            if (state === "SUCCESS") {
+                console.log('success');
+                $A.get('e.force:refreshView').fire();
+                this.getDataHandler(cmp);
+            } else if (state === "ERROR") {
+                var errors = response.getError();
+                console.log('error');
+            }
+             //$A.get('e.force:refreshView').fire();
+                       
+        }));
+        $A.enqueueAction(action);
+    }
+    
+})
+
+
+//style
+
+.THIS {
+}
+
+.THIS.hide{
+    display: none;
+}
+.THIS .slds-button{
+
+}
+
+

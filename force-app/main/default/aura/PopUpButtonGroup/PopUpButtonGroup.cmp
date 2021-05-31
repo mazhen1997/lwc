@@ -1,0 +1,103 @@
+<aura:component controller="PopUpButtonController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+
+    <aura:attribute name="dialogOpen" type="boolean" default="false"/>
+    <aura:attribute name="dialogCustormOpen" type="boolean" default="false"/>
+    <ltng:require scripts="{!$Resource.jquery}"/>
+    <ltng:require scripts="{!$Resource.sheetJs}"/>
+    <aura:attribute name="Id" type="string" default="0032v00002qZerNAAS" />
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="items" type="List"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <lightning:buttonGroup>
+        <lightning:button label="Open" onclick="{!c.openInit }" disabled="" />
+        <lightning:button label="Custorm_Open" onclick="{!c.startOpten }" disabled="" />
+    </lightning:buttonGroup>
+       
+    <!--弹窗 -->
+    <c:dialog title="Visualforce"  onclose="{!c.dialogClose}" open="{!v.dialogOpen}" bodyPadding="xxx-small">
+        <iframe aura:id="myIframe" src="" style="width:100%;height:400px;outline:none;border:none;" ></iframe>
+    </c:dialog>
+    <!--medium-->
+        <c:dialog title="Custorm_Popup" open="" size="large">
+            <aura:set attribute="headerExt">
+                <div class="slds-page-header__row slds-p-top_small">
+                    <div class="slds-page-header__col-meta">
+                        <div class="slds-grid slds-gutters slds-wrap">
+                            <div class="slds-col slds-size_6-of-12">
+                                <lightning:input  aura:id="input1" disabled="false" variant="label-inline" name=""  label="Custorm_Input"/>
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                <lightning:combobox aura:id="combox2" variant="label-inline" name="" options="{! v.options.status__c }" label="Custorm_Combobox" placeholder="Search"/>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+                <div class="slds-page-header__row">
+                    <div class="slds-page-header__col-meta">
+                        <p class="slds-page-header__meta-text slds-text-align_left">
+                            <span></span>
+                            Header_Body • 
+                            <span></span> 
+                            Header_Body
+                        </p>
+                    </div>
+                    <div class="slds-page-header__col-controls">
+                        <div class="slds-page-header__control">
+                            <lightning:button label="Search" onclick="{!c.search}"/>
+                            <lightning:button label="Cancel" onclick="{!c.cancel}"/>
+                        </div>
+                    </div>
+                </div>
+            </aura:set>
+            <aura:set attribute="body">
+                <div>
+                    BODY
+                </div>
+            </aura:set>
+            <aura:set attribute="footer">
+                <lightning:buttonGroup>
+                    <lightning:button name="ok" label="Ok" onclick="{! c.navToDownload }"/>
+                    <lightning:button name="cancel" label="Cancel" onclick="{! c.cancelDownload }"/>
+                </lightning:buttonGroup>
+            </aura:set>
+        </c:dialog>
+    
+    
+    
+    
+
+    <aura:attribute name="firstName" type="String"/>
+    <!-- <div class="row">
+        <h2 class="header"> Insert Contact</h2>
+        
+        <lightning:input name="input8" value="{! v.firstName }" placeholder="type your first name..."  label=""/>
+    </div>   --> 
+    <aura:attribute name="entity"  type="sObject" default="{}"/>
+    <div class="row">
+        <h2 class="header"> Insert Contact</h2>
+        <lightning:input name="input1" value="{! v.entity.Name }" placeholder=""   label="Name"/>
+        <lightning:input name="input2" value="{! v.entity.MailingAddress }" placeholder=""  label="MailingAddress"/>
+        <lightning:input  type="date" name="input3" value="{! v.entity.	Birthdate }" placeholder="" label="	Birthdate"/>
+        <lightning:input  type="email" name="input4" value="{! v.entity.Email }" placeholder=""  label="Email"/>
+        <lightning:input name="input5" value="{! v.entity.Phone }" placeholder=""  label="Phone"/>
+         <lightning:button  type="tel" name="input7" label="sumbit "  onclick="{!c.onbuler}"/>
+    </div>  
+    <div class="row">
+    <!-- 
+     https://sfdclesson.com/2019/06/20/lightning-filecard-component/
+     -->
+     <lightning:fileCard fileId="0692v00000FmqLFAAZ" description="Sample Description Contact Name Barr Tim"/>
+    </div>
+        <div class="row">   
+        
+
+        <aura:iteration items="{!v.items}" var="content">
+            <a><lightning:pill class="slds-m-bottom_small attchPills" label="{!content.Title}" name="{!content.ContentDocumentId}" onclick="{!c.previewFile}" >
+                <aura:set attribute="media">
+                    <lightning:icon iconName="doctype:attachment" size="large" alternativeText="icon"/>          
+                </aura:set>
+                </lightning:pill>
+            </a>
+        </aura:iteration>
+    </div>
+</aura:component>

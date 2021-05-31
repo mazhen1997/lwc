@@ -1,0 +1,45 @@
+<aura:component Controller="AccountController"  implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+ <!-- attributes -->
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="selectedRowsCount" type="Integer" default="0"/>
+    <aura:attribute name="selectedRowsDetails" type="Object" />
+    <aura:attribute name="selectedRowsList" type="List" />
+    
+    <aura:attribute name="maxRowSelection" type="Integer" default="5"/>
+    <aura:attribute name="selectedRows" type="List" />
+    
+    <!--- enableInfiniteLoading  -->
+    <aura:attribute name="enableInfiniteLoading" type="Boolean" default="true"/>
+    <aura:attribute name="initialRows" type="Integer" default="1"/>
+    <aura:attribute name="rowsToLoad" type="Integer" default="10"/>
+    <aura:attribute name="totalNumberOfRows" type="Integer" default="12"/>
+    <aura:attribute name="loadMoreStatus" type="String" default="Loading .... "/>
+    <aura:attribute name="showRowNumberColumn" type="Boolean" default="false"/>
+    <aura:attribute name="rowNumberOffset" type="Integer" default="0"/>
+    <aura:attribute name="rowsToAdd" type="Integer" default="10"/>
+    <aura:attribute name="currentCount" type="Integer" default="1"/>
+    <aura:attribute name="btn" type="String" />
+     <!--- 
+      https://developer.salesforce.com/forums/?id=9060G0000005U3aQAE
+
+       -->
+
+    <!-- handlers-->
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
+    <!-- the container element determine the height of the datatable -->
+    <div style="height: 600px">
+
+        
+        
+        <lightning:datatable columns="{! v.columns }"
+                             data="{! v.data }"
+                             keyField="id"
+                             showRowNumberColumn="true"
+                             enableInfiniteLoading="{! v.enableInfiniteLoading }"
+                             loadMoreOffset="{! v.loadMoreOffset }"
+                             onloadmore="{! c.loadMoreData }"/>
+    </div>
+    {! v.loadMoreStatus }   
+            <lightning:button label="{! v.btn }"  variant="brand" onclick="{!c.getpage}"/>    
+</aura:component>

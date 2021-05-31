@@ -1,0 +1,12 @@
+<aura:component  implements="lightning:actionOverride,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global"  >
+        <!-- where条件 -->
+    <aura:attribute name="additionalWhere1" type="String" default=""/>
+    <aura:attribute name="objectAPIName_title1" type="String" default="T_Shipment__c"/>
+       <aura:attribute name="selectedLookUpRecord_title1" type="sObject" default="{}"/>
+      <c:CommonLookup additionalWhere="{! v.additionalWhere1}" objectAPIName="{! v.objectAPIName_title1}" IconName="standard:portal_roles" selectedRecord="{!v.selectedLookUpRecord_title1}"  label=""/>
+       <lightning:button label="Click" onclick="{!c.myAction}"/>
+       <lightning:icon class="slds-input__icon slds-show" iconName="utility:search" size="x-small" alternativeText="search"/>
+      <lightning:icon class="slds-input__icon slds-show" iconName="utility:search" size="x-small" alternativeText="search"/>
+      
+    
+</aura:component>

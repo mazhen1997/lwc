@@ -1,0 +1,138 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                access="global" >
+    <lightning:card title="G04_返品情報詳細（SIE）" iconName="doctype:image" class="card_style"/>
+    
+    <!--
+    <aura:if isTrue="true">
+        <ui:message title="Warning" severity="warning" closable="true">
+            検索語には 2 文字以上を指定する必要があります。
+        </ui:message>
+    </aura:if>
+    -->
+    
+    <div style="background-color: white;border-radius: 5px;margin-top:10px;">
+        <aura:if isTrue="{!v.showSpinner}">
+            <lightning:spinner alternativeText="Loading" size="medium" />
+        </aura:if>
+    </div>
+    <div style="background-color: white;border-radius: 5px;margin-top:10px;">
+        
+        <div class="c-container" style="width: 100%;">
+            
+            <table style="border-collapse:separate; border-spacing:0px 10px;">
+                <tr>
+                    <td style="width: 20%;">
+                    </td>	
+                    
+                    <td>
+                        <div align="center"  >
+                            <lightning:button variant="brand" label="採番用データダウンロード" title="採番用データダウンロード" onclick="{!c.dummy1Init}"/>
+                            <lightning:button variant="brand" label="採番用データアップロード" title="採番用データアップロード" onclick="{! c.dummy2}"/>
+                            <lightning:button variant="brand" label="　受付票ダウンロード　" title="受付票ダウンロード" onclick="{! c.dummy3}"/>
+                        </div> 	
+                    </td>
+                    <td>
+                        <div align="center"  >
+                            <lightning:button variant="brand" label="　　　　　削除　　　　　" title="削除" onclick="{! c.dummy4}"/>
+                        </div> 	
+                    </td>	
+                </tr>     
+            </table>              
+        </div> 
+        
+        <div class="c-container" style="width: 100%;">
+            <lightning:recordEditForm aura:id="recordViewForm" objectApiName="T_poduct_return_detail__c">
+                
+                <lightning:layout multipleRows="true">
+                    <lightning:layoutItem padding="around-small" size="12">
+                        <lightning:layout pullToBoundary="medium">
+                            <table style="border-collapse:separate; border-spacing:0px 10px;width: 5%;"></table>                            
+                            <lightning:layoutItem flexibility="auto" padding="horizontal-medium">
+                                <table style="border-collapse:separate; border-spacing:0px 10px;width: 90%;">
+                                    <tr>
+                                        <td>返品No.</td>
+                                        <td><lightning:input aura:id="H01" variant="label-hidden" value="{!v.header01}" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>受付No.</td>
+                                        <td><lightning:input aura:id="H02" variant="label-hidden" value="{!v.header02}" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>得意先コード</td>
+                                        <td><lightning:input aura:id="H03" variant="label-hidden" value="{!v.header03}" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>得意先名</td>
+                                        <td><lightning:input aura:id="H04" variant="label-hidden" value="{!v.header04}" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>得意先担当者</td>
+                                        <td><lightning:input aura:id="H05" variant="label-hidden" value="{!v.header05}" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>作成者</td>
+                                        <td><lightning:input aura:id="H06" variant="label-hidden" value="{!v.header06}" /></td>
+                                    </tr> 
+                                </table>
+                            </lightning:layoutItem> 
+                            <table style="border-collapse:separate; border-spacing:0px 10px;width: 5%;"></table>                            
+                            <lightning:layoutItem flexibility="auto" padding="horizontal-medium">
+                                <table style="border-collapse:separate; border-spacing:0px 10px;width: 90%;">
+                                    <tr>
+                                        <td>電話/FAX</td>
+                                        <td><lightning:input aura:id="H07" variant="label-hidden" value="{!v.header07}" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>ご住所</td>
+                                        <td><lightning:input aura:id="H08" variant="label-hidden" value="{!v.header08}" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>返品ステタース</td>
+                                        <td><lightning:input aura:id="H09" variant="label-hidden" value="{!v.header09}" /></td>
+                                    </tr>
+                                    <tr style="height:35px;"></tr>
+                                    <tr style="height:35px;"></tr>
+                                    <tr>
+                                        <td>最終更新者</td>
+                                        <td><lightning:input aura:id="H10" variant="label-hidden" value="{!v.header10}" /></td>
+                                    </tr> 
+                                </table>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:recordEditForm>
+        </div>  
+        
+        <div class="c-container" style="padding: 10px;">
+            
+            <ui:message title="{!'　　' + v.count+'個の項目'}" severity="confirm" closable="true"/>
+            <lightning:datatable 
+                                 aura:id="resultlistId"
+                                 hideCheckboxColumn = "false"
+                                 columns="{! v.columns }"
+                                 data="{!v.results }"
+                                 onsort="{!c.updateColumnSorting}"
+                                 sortedBy="{!v.sortedBy}"
+                                 sortedDirection="{!v.sortedDirection}" 
+                                 keyField="id"/>
+            
+        </div>
+        <div class="c-container" style="width: 100%;">
+            <table style="border-collapse:separate; border-spacing:0px 10px;">
+                <tr>
+                    <td style="width: 50%;"> 	
+                    </td>
+                    <td>
+                        <div align="center"  >
+                            <lightning:button variant="brand" label="　　承認　　" title="承認" onclick="{! c.dummy1}" />
+                            <lightning:button variant="brand" label="　　却下　　" title="却下" onclick="{! c.dummy2}"/>
+                        </div> 	
+                    </td>
+                    <td> 	
+                    </td>	
+                </tr>  
+            </table>                      
+        </div> 
+    </div>
+</aura:component>

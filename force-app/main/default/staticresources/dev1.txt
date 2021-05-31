@@ -1,0 +1,30 @@
+
+
+
+
+             it2:          sfront_admin@sony.com.it2	2wsx#EDC4rfv   
+
+
+
+
+
+             dev1:         wenqiang.li@sony.com.dev1   aq864675966
+
+
+
+
+
+            uat2:         https://sfront--uat2.my.salesforce.com/
+                          sfront_admin@sony.com.uat2
+                          2wsx#EDC4rfv 
+
+
+
+
+
+
+
+             source 修改：               \\JPS00007540.jp.sony.com\fs3\vfs0466\01.Delivery\01.SIEJA\16.SFront\20.受注フロント(Ph2)\40.コーディング\10.SFDC開発 
+			 
+			 
+			 ?于返品，?促物（SFDC?）的マニュアル的Template，                          \\JPS00007540.jp.sony.com\fs3\vfs0466\01.Delivery\01.SIEJA\06.New System for Sales Dept\01.PJ Document\03.成果物\30.保守資料\20.ユーザーマニュアル

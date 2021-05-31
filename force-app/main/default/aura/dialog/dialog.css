@@ -1,0 +1,7 @@
+.THIS .slds-spinner_container{
+    position:absolute !important;
+    top:0px !important;
+}
+.THIS .slds-modal__content{
+    position:relative;
+}

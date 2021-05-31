@@ -1,0 +1,4 @@
+<apex:page controller="FileDownloadController" >
+    <h1>下载</h1>
+     <apex:outputLink value="{!downloadURL}" rendered="{!showDownload == true}">下载</apex:outputLink>
+</apex:page>

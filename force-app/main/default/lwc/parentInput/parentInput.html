@@ -1,0 +1,24 @@
+<template>
+    <lightning-card title="Input Number" icon-name="action:download">
+        <lightning-layout>
+          <lightning-layout-item flexibility="auto" padding="around-small">
+            <lightning-input
+              label="Parent Number"
+              type="number"
+              min="0"
+              max="1000000"
+              value={startCounter}
+              onchange={handleStartChange}
+
+              >
+            </lightning-input>
+          </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+          <lightning-layout-item  flexibility="auto" padding="around-small">
+            <c-child class="slds-show slds-is-relative" counter={startCounter} onchildchange={handlechildChange}> 
+            </c-child>
+          </lightning-layout-item>
+        </lightning-layout>
+    </lightning-card>
+</template>

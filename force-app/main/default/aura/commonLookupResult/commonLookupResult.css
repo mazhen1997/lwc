@@ -1,0 +1,6 @@
+.THIS {
+}
+.THIS .slds-listbox__option-text{
+     position:relative;
+     top:0.5rem;
+}

@@ -1,0 +1,14 @@
+body
+{
+    background-color:#d0e4fe;
+}
+.c-container{
+    background-color:white;
+}
+
+ .slds-file-selector__dropzone{
+    border: none;
+}
+ .slds-file-selector__dropzone .slds-file-selector__text{
+    display: none;
+}

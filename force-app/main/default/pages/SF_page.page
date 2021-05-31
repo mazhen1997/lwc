@@ -1,0 +1,15 @@
+<apex:page Controller="SF_pageController" >
+    <apex:form >
+        
+        
+        FirstName <br/>
+        <apex:inputField value="{!con.FirstName}"/>
+        <apex:commandButton value="insert"/>
+        
+        
+        
+        
+    </apex:form>
+    
+    
+</apex:page>

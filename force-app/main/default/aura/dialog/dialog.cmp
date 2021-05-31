@@ -1,0 +1,32 @@
+<aura:component >
+    <aura:attribute name="footer" type="Aura.Component[]" default="" />
+    <aura:attribute name="headerExt" type="Aura.Component[]" default="" />
+    <aura:attribute name="minHeight" type="string" default="" />
+    <aura:attribute name="title" type="string" default="" />
+    <aura:attribute name="bodyPadding" type="string" default="" />
+    <aura:attribute name="size" type="string" default="" />
+    <aura:attribute name="open" type="boolean" default="false" />
+    <aura:attribute name="loading" type="boolean" default="false" />
+    <aura:registerEvent name="onclose" type="c:defaultComponentEvent"/>
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="{!'slds-modal' + (v.open?' slds-fade-in-open ':' ') + (v.size?'slds-modal_'+v.size:'slds-modal_small')}">
+        <div class="slds-modal__container">
+            <header class="slds-modal__header">
+                <lightning:buttonIcon class="slds-modal__close" onclick="{!c.close}" size="large" iconName="utility:close"  variant="bare-inverse" title="close" alternativeText="Close modal" />
+                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{!v.title}</h2>
+                {!v.headerExt}
+            </header>
+            <div class="{!'slds-modal__content '+(v.bodyPadding?'slds-p-around_'+v.bodyPadding:'slds-p-around_medium')}" id="modal-content-id-1">
+                <aura:if isTrue="{!v.loading}">
+                    <lightning:spinner variant="brand" />
+                </aura:if>
+                {!v.body}
+            </div>
+            <aura:if isTrue="{!v.footer.length>0}">
+                <footer class="slds-modal__footer">
+                    {!v.footer}
+                </footer>
+            </aura:if>
+        </div>
+    </section>
+    <div class="{!'slds-backdrop' + (v.open?' slds-backdrop_open':'')}"></div>
+</aura:component>
